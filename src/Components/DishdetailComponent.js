@@ -42,7 +42,7 @@ function RenderDish({ dish }) {
 
 //===================================
 
-function RenderComment({ comments }) {
+function RenderComment({ comments, addComment, dishId }) {
 	// make sure the selected dish is an existing dish
 
 	console.log(comments);
@@ -66,7 +66,7 @@ function RenderComment({ comments }) {
 		<div>
 			<h4 className="mb-1">Comments</h4>
 			{commentView}
-			<CommentForm />
+			<CommentForm dishId={dishId} addComment={addComment} />
 		</div>
 	);
 }
@@ -92,7 +92,10 @@ const DishDetail = (props) => {
 						<RenderDish dish={props.dish} />
 					</div>
 					<div className="col-12 col-md-5 m-1">
-						<RenderComment comments={props.comments} />
+						<RenderComment
+							comments={props.comments}
+							addComment={props.addComment}
+						/>
 					</div>
 				</div>
 			</div>
@@ -118,6 +121,12 @@ class CommentForm extends Component {
 	handleSubmit(values) {
 		console.log(values);
 		this.toggleModal();
+		this.props.addComment(
+			this.props.dishId,
+			values.rating,
+			values.author,
+			values.comment
+		);
 	}
 
 	toggleModal = (event) => {
