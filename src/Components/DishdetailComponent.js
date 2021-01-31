@@ -17,6 +17,7 @@ import {
 } from "reactstrap";
 import { Control, LocalForm, Errors } from "react-redux-form";
 import { Link } from "react-router-dom";
+import { Loading } from "./LoadingComponent";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !val || val.length <= len;
@@ -72,7 +73,23 @@ function RenderComment({ comments, addComment, dishId }) {
 }
 
 const DishDetail = (props) => {
-	if (props.dish != null) {
+	if (props.isLoading) {
+		return (
+			<div className="container">
+				<div className="row">
+					<Loading />
+				</div>
+			</div>
+		);
+	} else if (props.errMess) {
+		return (
+			<div className="container">
+				<div className="row">
+					<h4>{props.errMess}</h4>
+				</div>
+			</div>
+		);
+	} else if (props.dish != null) {
 		return (
 			<div className="container">
 				<div className="row">
@@ -95,6 +112,7 @@ const DishDetail = (props) => {
 						<RenderComment
 							comments={props.comments}
 							addComment={props.addComment}
+							dishId={props.dish.id}
 						/>
 					</div>
 				</div>
@@ -214,16 +232,16 @@ class CommentForm extends Component {
 								</Col>
 							</Row>
 							<Row className="form-group">
-								<Label htmlFor="message" md={2}>
+								<Label htmlFor="comment" md={2}>
 									Comment
 								</Label>
 								<Col md={10}>
 									<Control.textarea
 										style={{ height: "200px" }}
-										model=".message"
-										id="message"
-										name="message"
-										placeholder="Message"
+										model=".comment"
+										id="comment"
+										name="comment"
+										placeholder="Comment"
 										className="form-control"
 										validators={{
 											required,
@@ -232,7 +250,7 @@ class CommentForm extends Component {
 									/>
 									<Errors
 										className="text-danger"
-										model=".message"
+										model=".comment"
 										show="touched"
 										messages={{
 											required: "Required",
